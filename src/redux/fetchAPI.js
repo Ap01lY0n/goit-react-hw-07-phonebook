@@ -24,18 +24,6 @@ export const fetchPostContact = createAsyncThunk(
 	}
 );
 
-export const fetchPutContact = createAsyncThunk(
-	'tasks/fetchPut',
-	async ({ id, name, number }, thunkAPI) => {
-		try {
-			const response = await axios.put(`/contacts/${id}`, { name, number });
-			return response.data;
-		} catch (error) {
-			return thunkAPI.rejectWithValue(error.message);
-		}
-	}
-);
-
 export const fetchDelContact = createAsyncThunk('tasks/fetchDel', async (id, thunkAPI) => {
 	try {
 		const response = await axios.delete(`/contacts/${id}`);

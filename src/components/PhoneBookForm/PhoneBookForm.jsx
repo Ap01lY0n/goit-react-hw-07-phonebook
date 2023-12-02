@@ -9,33 +9,15 @@ import {
   ValidationError,
 } from './PhoneBookForm.styled';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from '../../redux/contactsSlice';
-import { nanoid } from 'nanoid';
+import { fetchPostContact } from '../../redux/fetchAPI'; 
 
 const PhoneBookSchema = Yup.object().shape({
-  name: Yup.string().min(3, 'To short!').required('This field is required!'),
+  name: Yup.string().min(3, 'Too short!').required('This field is required!'),
   number: Yup.string()
     .min(6, 'Too short!')
     .max(9, 'Too long!')
     .required('This field is required!'),
 });
-
-  const handleAddContact = (dispatch, contacts, newContact) => {
-  const hasContact = contacts.some(({ name }) => name.toLowerCase() === newContact.name.toLowerCase());
-  const isNumberExists = contacts.some(({ number }) => number === newContact.number);
-
-  if (hasContact) {
-    alert(`${newContact.name} is already in contacts.`);
-    return;
-  }
-
-  if (isNumberExists) {
-    alert(`${newContact.number} is already in contacts.`);
-    return;
-  }
-
-  dispatch(addContact({ ...newContact, id: nanoid() }));
-};
 
 const PhoneBookForm = () => {
   const dispatch = useDispatch();
@@ -43,6 +25,31 @@ const PhoneBookForm = () => {
 
   const onFormSubmit = newContact => {
     handleAddContact(dispatch, contacts, newContact);
+  };
+
+  const handleAddContact = async (dispatch, contacts, newContact) => {
+    const hasContact = contacts.some(({ name }) => name.toLowerCase() === newContact.name.toLowerCase());
+    const isNumberExists = contacts.some(({ number }) => number === newContact.number);
+
+    if (hasContact) {
+      alert(`${newContact.name} is already in contacts.`);
+      return;
+    }
+
+    if (isNumberExists) {
+      alert(`${newContact.number} is already in contacts.`);
+      return;
+    }
+
+    // Dispatch the fetchPostContact action
+    try {
+      await dispatch(fetchPostContact(newContact));
+      // Optionally handle success (e.g., clear the form)
+      alert('Contact added successfully!');
+    } catch (error) {
+      // Handle error, if necessary
+      alert(`Error adding contact: ${error.message}`);
+    }
   };
 
   return (
