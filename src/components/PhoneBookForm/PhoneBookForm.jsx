@@ -41,13 +41,9 @@ const PhoneBookForm = () => {
       return;
     }
 
-    // Dispatch the fetchPostContact action
     try {
       await dispatch(fetchPostContact(newContact));
-      // Optionally handle success (e.g., clear the form)
-      alert('Contact added successfully!');
     } catch (error) {
-      // Handle error, if necessary
       alert(`Error adding contact: ${error.message}`);
     }
   };

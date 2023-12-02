@@ -3,6 +3,7 @@ import { List, ListItem, DelBtn } from './Contacts.styled';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectVisibleContacts } from '../../redux/selectors';
 import { fetchDelContact } from '../../redux/fetchAPI';
+import { toastWindow } from '../toast';
 
 const Contacts = () => {
   const dispatch = useDispatch();
@@ -10,6 +11,7 @@ const Contacts = () => {
 
   const onDeleteContact = (id) => {
     dispatch(fetchDelContact(id));
+    toastWindow(`Contact deleted.`);
   };
 
   return (
