@@ -1,13 +1,10 @@
-// store.js
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
-import contactsReducer from './contactsSlice';
+import { configureStore } from '@reduxjs/toolkit';
+import contactsReducer  from './contactsSlice';
+import { filterReducer } from "./filterSlice";
 
-const customMiddleware = (store) => (next) => (action) => {
-  console.log('contact added:', action);
-  return next(action);
-};
-
-export const store = configureStore({
-  reducer: contactsReducer,
-  middleware: [...getDefaultMiddleware(), customMiddleware],
+export const Store = configureStore({
+    reducer: {
+        contacts: contactsReducer,
+        filter: filterReducer,
+    }
 });

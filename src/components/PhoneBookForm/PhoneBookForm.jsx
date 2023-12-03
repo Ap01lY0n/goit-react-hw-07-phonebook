@@ -2,18 +2,22 @@ import React from 'react';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import {
-  ContactsBookForm,
-  Text,
-  ContactsBookInput,
-  SubmitBtn,
-  ValidationError,
+  MyForm,
+  MyField,
+  Label,
+  InputContainer,
+  ButtonForm,
+  ErrorMsg,
 } from './PhoneBookForm.styled';
+import { addContact } from '../../redux/fetchAPI';
+import { selectContacts } from '../../redux/selectors';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchPostContact } from '../../redux/fetchAPI'; 
+import { nanoid } from '@reduxjs/toolkit';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const PhoneBookSchema = Yup.object().shape({
-  name: Yup.string().min(3, 'Too short!').required('This field is required!'),
-  number: Yup.string()
+  name: Yup.string()
     .min(6, 'Too short!')
     .max(9, 'Too long!')
     .required('This field is required!'),
@@ -21,70 +25,52 @@ const PhoneBookSchema = Yup.object().shape({
 
 const PhoneBookForm = () => {
   const dispatch = useDispatch();
-  const contacts = useSelector(state => state.contacts.data);
+  const contacts = useSelector(selectContacts);
 
-  const onFormSubmit = newContact => {
-    handleAddContact(dispatch, contacts, newContact);
-  };
+  const handleSubmit = ({ name, phone }, { resetForm }) => {
+    const finalContact = {
+      id: nanoid(),
+      name: name,
+      phone: phone,
+    };
+  
+    const identContactName = contacts.find(contact => contact.name === name);
 
-  const handleAddContact = async (dispatch, contacts, newContact) => {
-    const hasContact = contacts.some(({ name }) => name.toLowerCase() === newContact.name.toLowerCase());
-    const isNumberExists = contacts.some(({ number }) => number === newContact.number);
-
-    if (hasContact) {
-      alert(`${newContact.name} is already in contacts.`);
-      return;
+    if (identContactName) {
+      return toast.info(`is already in contacts`, 'ok');
     }
-
-    if (isNumberExists) {
-      alert(`${newContact.number} is already in contacts.`);
-      return;
-    }
-
-    try {
-      await dispatch(fetchPostContact(newContact));
-    } catch (error) {
-      alert(`Error adding contact: ${error.message}`);
-    }
+    console.log(name, phone);
+    dispatch(addContact(finalContact));
+    resetForm();
   };
 
   return (
-    <Formik
-      initialValues={{
-        name: '',
-        number: '',
-      }}
-      validationSchema={PhoneBookSchema}
-      onSubmit={(value, helper) => {
-        onFormSubmit(value);
-        helper.resetForm({
-          values: {
-            name: '',
-            number: '',
-          },
-        });
-      }}
-    >
-      <ContactsBookForm>
-        <label>
-          <Text>Name-Surname:</Text>
-          <ContactsBookInput name="name" placeholder="Yaroslav Harkavec" />
-          <ValidationError name="name" component="span" />
-        </label>
+    <>
+      <Formik
+        initialValues={{
+          name: '',
+          phone: '',
+        }}
+        validationSchema={PhoneBookSchema}
+        onSubmit={handleSubmit}
+      >
+        <MyForm>
+          <InputContainer>
+            <Label htmlFor="name">Name</Label>
+            <MyField type="text" name="name" placeholder="" />
+            <ErrorMsg name="name" component="div" />
+          </InputContainer>
 
-        <label>
-          <Text>Number:</Text>
-          <ContactsBookInput
-            type="text"
-            name="number"
-            placeholder="111-11-11"
-          />
-          <ValidationError name="number" component="span" />
-        </label>
-        <SubmitBtn type="submit">Add contact</SubmitBtn>
-      </ContactsBookForm>
-    </Formik>
+          <InputContainer>
+            <Label htmlFor="phone">Number</Label>
+            <MyField type="tel" name="phone" placeholder="" />
+            <ErrorMsg name="phone" component="div" />
+          </InputContainer>
+          <ButtonForm type="submit">Add contact</ButtonForm>
+        </MyForm>
+      </Formik>
+      <ToastContainer />
+    </>
   );
 };
-
 export default PhoneBookForm;

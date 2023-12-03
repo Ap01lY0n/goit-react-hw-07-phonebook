@@ -1,43 +1,47 @@
 import styled from 'styled-components';
 import { Form, Field, ErrorMessage } from 'formik';
 
-export const ContactsBookForm = styled(Form)`
-  display: flex;
-  flex-direction: column;
-  margin-left: 700px;
+export const MyForm = styled(Form)`
+display: flex;
+flex-direction: column;
+gap: 25px;
+align-items: center;
 `;
 
-export const ContactsBookInput = styled(Field)`
-  margin-left: 15px;
+export const MyField = styled(Field)`
   margin-top: 5px;
   margin-bottom: 5px;
   margin-right: 20px;
   width: 300px;
   height: 35px;
   display: flex;
+  }
 `;
 
-export const Text = styled.p`
-  padding-left: 20px;
-  font-size: 20px;
-  margin-top: 5px;
-  margin-bottom: 5px;
-  font-weight: 600;
+export const Label = styled.label`
+display: flex;
+margin-bottom: 15px;
+
+`;
+export const InputContainer = styled.div`
+  position: relative;
+  width: 420px;
+  margin-left: 100px;
+`;
+export const ButtonForm = styled.button`
+width: 250px;
+margin-top: 20px;
+margin-bottom: 20px;
+margin: 0 auto;
+border: 1px solid gray;
+background-color: white;
+font-size: 18px;
+font-weight: 700;
+cursor: pointer;  
+
 `;
 
-export const SubmitBtn = styled.button`
-  width: 250px;
-  margin-left: 40px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-  border: 1px solid gray;
-  background-color: white;
-  font-size: 18px;
-  font-weight: 700;
-  cursor: pointer;
-`;
-
-export const ValidationError = styled(ErrorMessage)`
+export const ErrorMsg = styled(ErrorMessage)`
   margin-left: 20px;
   color: red;
 `;
